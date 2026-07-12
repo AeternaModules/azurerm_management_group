@@ -1,3 +1,7 @@
+output "management_groups_id" {
+  description = "Map of id values across all management_groups, keyed the same as var.management_groups"
+  value       = { for k, v in azurerm_management_group.management_groups : k => v.id }
+}
 output "management_groups_display_name" {
   description = "Map of display_name values across all management_groups, keyed the same as var.management_groups"
   value       = { for k, v in azurerm_management_group.management_groups : k => v.display_name }
