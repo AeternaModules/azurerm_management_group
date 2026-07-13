@@ -14,14 +14,6 @@ EOT
     parent_management_group_id = optional(string)
     subscription_ids           = optional(set(string))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.management_groups : (
-        v.subscription_ids == null || (can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", v.subscription_ids)))
-      )
-    ])
-    error_message = "must be a valid UUID"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_management_group's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -34,5 +26,8 @@ EOT
   #   source:    [from commonids.ValidateManagementGroupID] !ok
   # path: parent_management_group_id
   #   source:    [from commonids.ValidateManagementGroupID] err != nil
+  # path: subscription_ids[*]
+  #   condition: can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", value))
+  #   message:   must be a valid UUID
 }
 
